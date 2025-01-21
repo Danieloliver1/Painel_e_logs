@@ -22,9 +22,7 @@ __pycache__/
 
 # Incluir arquivos .db específicos nas pastas de banco de dados
 !dados/
-!banco_de_dados_classificacao/
-!dados/banco_de_dados_regressao/
-!dados/banco_de_dados_series_temporais/
+
 
 
 # Dependências do sistema operacional
