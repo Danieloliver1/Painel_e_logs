@@ -19,6 +19,7 @@ __pycache__/
 
 # Banco de dados local
 *.db
+!diretorio_banco/
 
 # Dependências do sistema operacional
 .DS_Store
