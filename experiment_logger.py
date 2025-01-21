@@ -61,7 +61,7 @@ class ExperimentLogger():
 
         self.commit_id = None  # Inicia com None, que pode ser atribuído mais tarde
 
-        #self._ajustar_contador_ids()
+        # self._ajustar_contador_ids()
 
     def preparar_modelo(self, **kwargs):
 
@@ -131,8 +131,8 @@ class ExperimentLogger():
     #     conn.close()
 
 
-
 # ------------------------------------------------Classificação ou Regressão -------------------------------------------------------------
+
 
     def salvando_relatorio(self, commit_id, endereco, fpr=None, tpr=None, thresholds_roc=None, precision=None, recall=None, thresholds=None, avg_precision=None):
         """
@@ -181,23 +181,23 @@ class ExperimentLogger():
         """
         if self.tipo == 'Classificacao':
             id_atual = self.contador_id_classificacao
-            #self.contador_id_classificacao += 1
-            #dados = self.modelo.metricas_classificacao
+            # self.contador_id_classificacao += 1
+            # dados = self.modelo.metricas_classificacao
             self.sqlite_classification(
                 id_atual, commit_id, endereco, fpr, tpr, thresholds_roc, precision, recall, thresholds, avg_precision)
 
         elif self.tipo == 'Regressao':
             id_atual = self.contador_id_regressao
-            #self.contador_id_regressao += 1
-            #dados = self.modelo.metricas_regressao
+            # self.contador_id_regressao += 1
+            # dados = self.modelo.metricas_regressao
 
             self.sqlite_regression(
                 id_atual, commit_id, endereco)
 
         elif self.tipo == 'Series_Temporais':
             id_atual = self.contador_id_series_temporais
-            #self.contador_id_series_temporais += 1
-            #dados = self.modelo.decomposicao
+            # self.contador_id_series_temporais += 1
+            # dados = self.modelo.decomposicao
 
             self.sqlite_seriestemporais(
                 id_atual, commit_id, endereco)
@@ -207,6 +207,7 @@ class ExperimentLogger():
 # ================================================ Parte Banco de dados ==================================================================
 
     # Função para verificar se uma coluna existe
+
 
     def coluna_existe(self, tabela, coluna, cursor):
         """
@@ -402,7 +403,7 @@ class ExperimentLogger():
 
         # Conectando ao banco de dados SQLite
         conn = sqlite3.connect(
-            './dados/banco_de_dados_seriestemporais/series_temporais.db')
+            './dados/banco_de_dados_series_temporais/series_temporais.db')
         cursor = conn.cursor()
 
         # Dados para salvar (exemplo: métrica de classificação)
@@ -509,6 +510,7 @@ class ExperimentLogger():
 
 # --------------------------------------------------------------------------------------------------------------------------------
 
+
     def report(self, detalhado=False):
         """
         Retorna o relatório gerado pelo modelo.
@@ -528,7 +530,7 @@ class ExperimentLogger():
                 print("Relatório detalhado:")
                 return self.modelo.regression_result  # Retorna o resultado de regressão
             return self.modelo.report()  # Chamando a função report para outros tipos de modelos
-        
+
         if self.tipo == 'Series_Temporais':
             if detalhado:
                 print("Relatório detalhado:")

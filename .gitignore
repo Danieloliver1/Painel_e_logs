@@ -17,9 +17,15 @@ __pycache__/
 *.bak
 *.swp
 
-# Banco de dados local
+# Ignorar todos os arquivos .db
 *.db
+
+# Incluir arquivos .db específicos nas pastas de banco de dados
 !dados/
+!banco_de_dados_classificacao/
+!dados/banco_de_dados_regressao/
+!dados/banco_de_dados_series_temporais/
+
 
 # Dependências do sistema operacional
 .DS_Store
