@@ -21,7 +21,7 @@ __pycache__/
 *.db
 
 # Incluir arquivos .db específicos nas pastas de banco de dados
-!dados/
+#!dados/
 
 
 
