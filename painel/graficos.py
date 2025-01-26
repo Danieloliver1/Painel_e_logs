@@ -655,3 +655,49 @@ class Graficos:
 
         # Exibindo o gráfico
         return fig
+
+    import matplotlib.pyplot as plt
+
+    def plot_decomposicao(self, decomposicao, title):
+        # Configuração de estilo geral
+
+        text_color = 'white'  # Cor do texto
+
+        # Criação dos subplots
+        fig, axes = plt.subplots(
+            ncols=1, nrows=4, sharex=True, figsize=(20, 8))
+
+        # Cores com tons de azul
+        colors = ['deepskyblue', 'dodgerblue', 'royalblue', 'steelblue']
+
+        # Plotando os dados nas subfiguras
+        decomposicao['observed'].plot(
+            ax=axes[0], color=colors[0], title='Dados Observados')
+        decomposicao['trend'].plot(
+            ax=axes[1], color=colors[1], title='Tendência')
+        decomposicao['seasonal'].plot(
+            ax=axes[2], color=colors[2], title='Sazonalidade')
+        decomposicao['resid'].plot(
+            ax=axes[3], color=colors[3], title='Resíduos')
+
+        # Ajustando títulos e rótulos com tamanhos e cores personalizadas
+        for ax in axes:
+            ax.title.set_color(text_color)  # Cor do título
+            ax.title.set_fontsize(14)  # Aumenta o tamanho do título
+            ax.xaxis.label.set_color(text_color)  # Cor do rótulo do eixo X
+            ax.yaxis.label.set_color(text_color)  # Cor do rótulo do eixo Y
+            ax.tick_params(colors=text_color)  # Cor dos ticks
+            ax.spines['bottom'].set_color(text_color)  # Cor da borda inferior
+            ax.spines['top'].set_color(text_color)  # Cor da borda superior
+            ax.spines['left'].set_color(text_color)  # Cor da borda esquerda
+            ax.spines['right'].set_color(text_color)  # Cor da borda direita
+
+        # Ajuste geral do título da figura
+        # Título principal maior
+        fig.suptitle(title, color=text_color, fontsize=18)
+
+        # Ajustando os espaçamentos
+        plt.tight_layout(rect=[0, 0, 1, 0.95])
+
+        # Retornando a figura
+        return fig

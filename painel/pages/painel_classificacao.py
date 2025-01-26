@@ -29,17 +29,10 @@ graficos = Graficos()
 
 st.set_page_config(layout="wide")
 
-# Carregando dados
-# link = '../dados/bando_de_dados_classificacao.csv'
-# df = pd.read_csv(link)
-
-
-# df = pd.concat([dataset, dataset_metricas], axis=1, ignore_index=False)
-
 
 # Para filtro
-df_filtro['id_combinado'] = df_filtro['id'].astype(
-    str) + ' - ' + df_filtro['commit_id']
+df_filtro['id_combinado'] = df_filtro['commit_id'].astype(
+    str) + ' - ' + df_filtro['controle_de_versao'].astype(str)
 
 
 metricas_gerais = [
@@ -82,12 +75,12 @@ with aba1:
 
 # Garantindo que o DataFrame filtrado não está vazio antes de consultar métricas
 if not df_filtrado.empty:
-    id_atual = df_filtrado.iloc[0, 0]  # Pegando o valor diretamente
+    endereco = df_filtrado.iloc[0, 2]  # Pegando o valor diretamente
     commit_id = df_filtrado.iloc[0, 1]  # Pegando o valor diretamente
 
 df_metricas = dados.consultar_metricas_cl(
     # Retorna as metricas
-    id_atual=int(df_filtrado.iloc[0, 0]), commit_id=str(df_filtrado.iloc[0, 1]))
+    commit_id=str(df_filtrado.iloc[0, 1]), endereco=str(df_filtrado.iloc[0, 2]))
 
 with aba2:
     id_metric = df_filtrado['commit_id'].iloc[0]  # Obtendo o valor desejado
@@ -111,7 +104,7 @@ with aba2:
     with col1:
         st.subheader("Métricas", divider=True)
         for x in metricas_gerais:
-            row_mean = float(df_metricas[x].round(4))
+            row_mean = f"{df_metricas[x].astype(float).iloc[0]:.4f}"
             nome = x.replace('_', ' ')
             #st.metric(nome, row_mean)  # Passando métricas
             
@@ -171,7 +164,7 @@ with aba2:
     with col2:
         st.subheader("Target Real", divider=True)
         for x in metricas_reais:
-            row_mean = float(df_metricas[x].round(4))
+            row_mean = f"{df_metricas[x].astype(float).iloc[0]:.4f}"
             nome = x.replace('_', ' ')
             #st.metric(nome, row_mean)  # Passando métricas
             
@@ -232,7 +225,7 @@ with aba2:
 
         st.subheader("Target Previsto", divider=True)
         for x in metricas_preditas:
-            row_mean = float(df_metricas[x].round(4))
+            row_mean = f"{df_metricas[x].astype(float).iloc[0]:.4f}"
             nome = x.replace('_', ' ')
             #st.metric(nome, row_mean)  # Passando métricas
             
@@ -292,7 +285,7 @@ with aba2:
     with col4:
         st.subheader("Direfença entre o real e o previsto", divider=True)
         for x in metricas_diferencas:
-            row_mean = float(df_metricas[x].round(4))
+            row_mean = f"{df_metricas[x].astype(float).iloc[0]:.4f}"
             nome = x.replace('_', ' ')
             #st.metric(nome, row_mean)  # Passando métricas
             

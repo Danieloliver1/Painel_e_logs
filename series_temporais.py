@@ -15,14 +15,38 @@ class Series_Temporais():
         - time_index: Índice temporal associado à série (e.g., datas ou períodos).
         """
 
-    def __init__(self, y_real, y_pred):
-
+    def __init__(self, y_real, y_pred, tipo):
+        
+        
+        
+        self.tipo = tipo
         self.y_real = y_real
         self.y_pred = y_pred
 
 
         # Inicializa um dicionário para armazenar as métricas
-        self.decomposicao = {}
+        # self.decomposicao = {}
+        
+        # A series temporais é para classifição ou regressão?
+        
+        if self.tipo == 'cl':
+            # Instancia Classification
+            self.modelo = Classification(
+                kwargs.get('y_real'), kwargs.get(
+                    'y_pred')
+            )
+            self.modelo.metricas_classificacao
+            
+
+        elif self.tipo == 're':
+            # Instancia Regression
+            self.modelo = Regression(
+                kwargs.get('y_real'), kwargs.get(
+                    'y_pred')
+            )
+            self.modelo.metricas_regressao
+        
+        
         #self.metricas_regressao = {}
         # self.metricas_classificao = {}
 
@@ -31,50 +55,81 @@ class Series_Temporais():
 
         # Chama a função de cálculo das métricas de regressão
         #self._calculo_metricas_regressao()
-
-        decomposicao_real = seasonal_decompose(self.y_real) 
-        dados_observados_real = decomposicao_real.observed
-        tendencias_real = decomposicao_real.trend 
-        sazonalidade_real = decomposicao_real.seasonal 
-        resiudos_real = decomposicao_real.resid 
         
-        decomposicao_pred = seasonal_decompose(self.y_pred) 
-        dados_observados_pred = decomposicao_pred.observed
-        tendencias_pred = decomposicao_pred.trend 
-        sazonalidade_pred = decomposicao_pred.seasonal 
-        resiudos_pred = decomposicao_pred.resid 
+        # Frequências de Tempo:
+        # 'A' ou 'Y': Anual (1 vez por ano)
+        # 'Q': Trimestral (4 vezes por ano)
+        # 'M': Mensal (12 vezes por ano)
+        # 'W': Semanal (52 vezes por ano)
+        # 'D': Diário (uma vez por dia)
+        # 'B': Dias úteis (não inclui fins de semana)
+        # 'H': Horário (uma vez por hora)
+        # 'T' ou 'min': Minuto (uma vez por minuto)
+        # 'S': Segundo (uma vez por segundo)
+        # 'L' ou 'ms': Milissegundo (milésimos de segundo, 1/1.000 de segundo)
+        # 'U': Microsegundo (1/1.000.000 de segundo)
+        # 'N': Nanosegundo (1/1.000.000.000 de segundo)
         
-        self.decomposicao = {
-            'dados observados atual': dados_observados_real,
-            'tendencias atual': tendencias_real,
-            'sazonalidade atual': sazonalidade_real,
-            'resiudos atual': resiudos_real,
-            'dados observados previsto': dados_observados_pred,
-            'tendencias previsto': tendencias_pred,
-            'sazonalidade previsto': sazonalidade_pred,
-            'resiudos previsto': resiudos_pred
-        }
+        # Mensal com Padrão Anual:
+        # Period: 12
+        # Frequência: 'M' (mensal)
+        # Exemplo: Dados mensais com um padrão sazonal anual, como vendas mensais ao longo de vários anos.
+        # Semanal com Padrão Anual:
 
-    @property
-    def series_result(self):
-        """
-        Método getter para acessar as métricas de regressão
-        """
-        return self.decomposicao  # Retorna o dicionário de métricas de regressao
+        # Period: 52
+        # Frequência: 'W' (semanal)
+        # Exemplo: Dados semanais com um padrão sazonal anual, como temperatura média semanal ao longo de vários anos.
+        # Diário com Padrão Semanal:
 
-    def get_metric(self, metric_name):
-        """
-        Método para acessar uma métrica específica.
-        """
-        return self.decomposicao.get(metric_name, "Métrica não encontrada")
+        # Period: 7
+        # Frequência: 'D' (diário)
+        # Exemplo: Dados diários com sazonalidade semanal, como o fluxo de tráfego em um site durante uma semana.
+        # Diário com Padrão Anual:
 
-    def report(self):
-        """
-        Método para gerar um relatório das métricas de regressão, retorna um Dataframe.
-        """
-        dados = self.decomposicao
-        df = pd.DataFrame(list(dados.items()), columns=['Nome', 'Valor'])
-        return df
+        # Period: 365
+        # Frequência: 'D' (diário)
+        # Exemplo: Dados diários com sazonalidade anual, como temperatura diária ao longo de vários anos.
+        # Horário com Padrão Diário:
+
+        # Period: 24
+        # Frequência: 'H' (horária)
+        # Exemplo: Dados horárias com sazonalidade diária, como consumo de energia ao longo de um dia.
+        # Minuto com Padrão Horário:
+
+        # Period: 60
+        # Frequência: 'T' ou 'min' (minuto)
+        # Exemplo: Dados por minuto com sazonalidade horária, como quantidade de acessos em um site por minuto ao longo de uma hora.
+        # Milissegundos com Padrão de Segundo:
+
+        # Period: 1000
+        # Frequência: 'L' (milissegundo)
+        # Exemplo: Dados milissegundo a milissegundo com um padrão sazonal diário.
+        # Microsegundos com Padrão de Milissegundo:
+
+        # Period: 1000000
+        # Frequência: 'U' (microsegundo)
+        # Exemplo: Dados com alta frequência temporal, como medições de sistemas de controle de precisão.
+
+    # @property
+    # def series_result(self):
+    #     """
+    #     Método getter para acessar as métricas de regressão
+    #     """
+    #     return self.decomposicao  # Retorna o dicionário de métricas de regressao
+
+    # def get_metric(self, metric_name):
+    #     """
+    #     Método para acessar uma métrica específica.
+    #     """
+    #     return self.decomposicao.get(metric_name, "Métrica não encontrada")
+
+    # def report(self):
+    #     """
+    #     Método para gerar um relatório das métricas de regressão, retorna um Dataframe.
+    #     """
+    #     dados = self.decomposicao
+    #     df = pd.DataFrame(list(dados.items()), columns=['Nome', 'Valor'])
+    #     return df
 
 
 

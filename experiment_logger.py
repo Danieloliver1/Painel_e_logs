@@ -19,7 +19,7 @@ class ExperimentLogger():
     """
     Classe responsável por gerenciar a execução de experimentos de classificação e regressão.
 
-    A classe calcula métricas, organiza os resultados e os salva em arquivos CSV. 
+    A classe calcula métricas, organiza os resultados e os salva em arquivos CSV.
     Pode ser utilizada para experimentos de classificação ou regressão.
     """
 
@@ -36,7 +36,7 @@ class ExperimentLogger():
         Lança:
         - ValueError: Caso o tipo informado não seja 'Classificacao' ou 'Regressao'.
 
-        Para salvar o relatorio em csv, precisa chamar a função salvando_relatorio(commit_id) o commit_id é para definir um historico de abordagem. 
+        Para salvar o relatorio em csv, precisa chamar a função salvando_relatorio(commit_id) o commit_id é para definir um historico de abordagem.
         """
 
         # Definir o tipo logo no início
@@ -69,88 +69,45 @@ class ExperimentLogger():
             # Instancia Classification
             self.modelo = Classification(
                 kwargs.get('y_real'), kwargs.get(
-                    'y_pred'), kwargs.get('X_real')
+                    'y_pred')
             )
 
         elif self.tipo == 'Regressao':
             # Instancia Regression
             self.modelo = Regression(
                 kwargs.get('y_real'), kwargs.get(
-                    'y_pred'), kwargs.get('X_real')
+                    'y_pred')
             )
 
         elif self.tipo == 'Series_Temporais':
             # Instancia Regression
-            self.modelo = Series_Temporais(
-                kwargs.get('y_real'), kwargs.get(
-                    'y_pred')
-            )
+            # self.modelo = Series_Temporais(kwargs.get('y_real'), kwargs.get('y_pred'), kwargs.get('tipo'))
+            pass
         else:
             raise ValueError(
                 "Tipo inválido. Escolha entre 'Classificacao', 'Regressao',  ou 'Series_Temporais'."
             )
 
-    # def _ajustar_contador_ids(self):
-    #     """
-    #     Ajusta os contadores de ID com base nos dados existentes no banco de dados SQLite.
-    #     """
-    #     # Caminho para o banco de dados SQLite
-    #     db_path = './dados/banco_de_dados_classificacao/classificacao.db'
-
-    #     # Conectando ao banco de dados
-    #     conn = sqlite3.connect(db_path)
-    #     cursor = conn.cursor()
-
-    #     # Ajustando o contador para a tabela CLASSIFICACAO
-    #     cursor.execute(
-    #         "CREATE TABLE IF NOT EXISTS CLASSIFICACAO (id INTEGER PRIMARY KEY)")
-    #     cursor.execute("SELECT MAX(id) FROM CLASSIFICACAO")
-    #     # Obtém o valor máximo do ID
-    #     max_id_classificacao = cursor.fetchone()[0]
-    #     self.contador_id_classificacao = (
-    #         max_id_classificacao + 1) if max_id_classificacao is not None else 1
-
-    #     # Ajustando o contador para a tabela REGRESSAO
-    #     cursor.execute(
-    #         "CREATE TABLE IF NOT EXISTS REGRESSAO (id INTEGER PRIMARY KEY)")
-    #     cursor.execute("SELECT MAX(id) FROM REGRESSAO")
-    #     max_id_regressao = cursor.fetchone()[0]  # Obtém o valor máximo do ID
-    #     self.contador_id_regressao = (
-    #         max_id_regressao + 1) if max_id_regressao is not None else 1
-
-    #     # Ajustando o contador para a tabela SERIES_TEMPORAIS
-    #     cursor.execute(
-    #         "CREATE TABLE IF NOT EXISTS SERIES_TEMPORAIS (id INTEGER PRIMARY KEY)")
-    #     cursor.execute("SELECT MAX(id) FROM SERIES_TEMPORAIS")
-    #     # Obtém o valor máximo do ID
-    #     max_id_series_temporais = cursor.fetchone()[0]
-    #     self.contador_id_series_temporais = (
-    #         max_id_series_temporais + 1) if max_id_series_temporais is not None else 1
-
-    #     # Fechando a conexão
-    #     conn.close()
-
 
 # ------------------------------------------------Classificação ou Regressão -------------------------------------------------------------
 
-
-    def salvando_relatorio(self, commit_id, endereco, fpr=None, tpr=None, thresholds_roc=None, precision=None, recall=None, thresholds=None, avg_precision=None):
+    def salvando_relatorio(self, commit_id, endereco, **kwargs):
         """
-            Salva as métricas e os relatórios de classificação ou regressão em 
-            arquivos CSV, atualizando os IDs e associando os dados ao commit 
+            Salva as métricas e os relatórios de classificação ou regressão em
+            arquivos CSV, atualizando os IDs e associando os dados ao commit
             especificado.
 
             PARÂMETROS:
             -----------
             commit_id : str
-                O ID do commit associado ao relatório. Esse valor será utilizado 
-                para identificar o commit ao qual os relatórios e métricas estão 
+                O ID do commit associado ao relatório. Esse valor será utilizado
+                para identificar o commit ao qual os relatórios e métricas estão
                 associados.
 
             DESCRIÇÃO:
             -----------
-            A função verifica o tipo do problema ('Classificacao' ou 'Regressao') 
-            e, com base nesse tipo, executa diferentes ações para salvar as 
+            A função verifica o tipo do problema ('Classificacao' ou 'Regressao')
+            e, com base nesse tipo, executa diferentes ações para salvar as
             métricas associadas.
 
             Para problemas de 'Classificação', a função realiza o seguinte:
@@ -173,10 +130,10 @@ class ExperimentLogger():
 
             NOTAS:
             ------
-            - Para problemas de classificação, dois arquivos CSV são salvos: 
+            - Para problemas de classificação, dois arquivos CSV são salvos:
             um para as métricas globais e outro por classe.
             - Para problemas de regressão, apenas um arquivo CSV é gerado.
-            - O ID sequencial é gerado e incrementado com base no tipo de problema 
+            - O ID sequencial é gerado e incrementado com base no tipo de problema
             (Classificação ou Regressão).
         """
         if self.tipo == 'Classificacao':
@@ -184,7 +141,17 @@ class ExperimentLogger():
             # self.contador_id_classificacao += 1
             # dados = self.modelo.metricas_classificacao
             self.sqlite_classification(
-                id_atual, commit_id, endereco, fpr, tpr, thresholds_roc, precision, recall, thresholds, avg_precision)
+                id_atual,
+                commit_id,
+                endereco,
+                fpr=kwargs.get('fpr'),
+                tpr=kwargs.get('tpr'),
+                thresholds_roc=kwargs.get('thresholds_roc'),
+                precision=kwargs.get('precision'),
+                recall=kwargs.get('recall'),
+                thresholds=kwargs.get('thresholds'),
+                avg_precision=kwargs.get('avg_precision')
+            )
 
         elif self.tipo == 'Regressao':
             id_atual = self.contador_id_regressao
@@ -200,14 +167,20 @@ class ExperimentLogger():
             # dados = self.modelo.decomposicao
 
             self.sqlite_seriestemporais(
-                id_atual, commit_id, endereco)
+                id_atual,
+                commit_id,
+                endereco,
+                observed=kwargs.get('observed'),
+                trend=kwargs.get('trend'),
+                seasonal=kwargs.get('seasonal'),
+                resid=kwargs.get('resid')
+            )
         print("Salvamento concluído")
 
 
 # ================================================ Parte Banco de dados ==================================================================
 
     # Função para verificar se uma coluna existe
-
 
     def coluna_existe(self, tabela, coluna, cursor):
         """
@@ -219,7 +192,7 @@ class ExperimentLogger():
         return coluna in colunas
 # -------------------------------------Salvando em um Banco de dados para classificação---------------------------------------------------
 
-    def sqlite_classification(self, id_atual, commit_id, endereco, fpr, tpr, thresholds_roc, precision, recall, thresholds, avg_precision):
+    def sqlite_classification(self, id_atual, commit_id, endereco, fpr=None, tpr=None, thresholds_roc=None, precision=None, recall=None, thresholds=None, avg_precision=None):
 
         # Conectando ao banco de dados SQLite
         conn = sqlite3.connect(
@@ -233,7 +206,7 @@ class ExperimentLogger():
 
         # Convertendo os valores para tipos padrão (int ou float)
         dados_convertidos = {key: float(value) if isinstance(
-            value, (np.int32, np.float32)) else value for key, value in dados.items()}
+            value, (np.int32, np.float32, np.int64, np.float64)) else value for key, value in dados.items()}
 
         metricas = json.dumps(dados_convertidos)  # Convertendo para JSON
 
@@ -270,7 +243,7 @@ class ExperimentLogger():
         if not tabela_existe:
             cursor.execute('''
                 CREATE TABLE CLASSIFICACAO (
-                    id INTEGER PRIMARY KEY,
+                    id INTEGER,
                     id_commit TEXT,
                     controle_de_versao TEXT,
                     data DATETIME,
@@ -285,7 +258,7 @@ class ExperimentLogger():
                     recall TEXT,
                     thresholds TEXT,
                     avg_precision REAL
-                    
+
                 )
             ''')
         else:
@@ -339,7 +312,7 @@ class ExperimentLogger():
 
         # Convertendo os valores para tipos padrão (int ou float)
         dados_convertidos = {key: float(value) if isinstance(
-            value, (np.int32, np.float32)) else value for key, value in dados.items()}
+            value, (np.int32, np.float32, np.int64, np.float64)) else value for key, value in dados.items()}
 
         metricas = json.dumps(dados_convertidos)  # Convertendo para JSON
 
@@ -358,7 +331,7 @@ class ExperimentLogger():
         if not tabela_existe:
             cursor.execute('''
                 CREATE TABLE REGRESSAO (
-                    id INTEGER PRIMARY KEY,
+                    id INTEGER,
                     id_commit TEXT,
                     controle_de_versao TEXT,
                     data DATETIME,
@@ -366,7 +339,7 @@ class ExperimentLogger():
                     dados TEXT,
                     y_test TEXT,
                     y_pred TEXT
-                    
+
                 )
             ''')
         else:
@@ -399,30 +372,15 @@ class ExperimentLogger():
         conn.close()
 
 # -------------------------------------Salvando em um Banco de dados para Séries temporais------------------------------------------------
-    def sqlite_seriestemporais(self, id_atual, commit_id, endereco):
-
+    def sqlite_seriestemporais(self, id_atual, commit_id, endereco, observed=None, trend=None, seasonal=None, resid=None):
         # Conectando ao banco de dados SQLite
         conn = sqlite3.connect(
             './dados/banco_de_dados_series_temporais/series_temporais.db')
         cursor = conn.cursor()
 
-        # Dados para salvar (exemplo: métrica de classificação)
-        dados = self.modelo.metricas_series_temporais
-        y_test = self.modelo.y_real
-        y_pred = self.modelo.y_pred
-
-        # Convertendo os valores para tipos padrão (int ou float)
-        dados_convertidos = {key: float(value) if isinstance(
-            value, (np.int32, np.float32)) else value for key, value in dados.items()}
-
-        decomposicao = json.dumps(dados_convertidos)  # Convertendo para JSON
-
-        # Convertendo as métricas para JSON para armazenar no banco
-        # parametros = json.dumps(dados)
-
         # Obtendo a data e hora atual para salvar
-        data_atual = self.data_atual
-        hora_atual = self.hora_atual
+        data_atual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        hora_atual = datetime.now().strftime('%H:%M:%S')
 
         cursor.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='SERIES_TEMPORAIS'")
@@ -430,40 +388,57 @@ class ExperimentLogger():
 
         # Se a tabela não existir, cria com todas as colunas
         if not tabela_existe:
-            cursor.execute('''
+            cursor.execute(''' 
                 CREATE TABLE SERIES_TEMPORAIS (
                     id INTEGER PRIMARY KEY,
                     id_commit TEXT,
                     controle_de_versao TEXT,
                     data DATETIME,
                     hora DATETIME,
-                    dados TEXT,
+                    observed TEXT,
+                    trend TEXT,
+                    seasonal TEXT,
+                    resid TEXT,
                     y_test TEXT,
                     y_pred TEXT
-                    
                 )
             ''')
         else:
             # Adiciona colunas extras se necessário
-            for coluna in ["id_commit", "controle_de_versao", "data", "hora", "dados", "y_test", "y_pred"]:
+            for coluna in ["id_commit", "controle_de_versao", "data", "hora", "observed", "trend", "seasonal", "resid", "y_test", "y_pred"]:
                 if not self.coluna_existe("SERIES_TEMPORAIS", coluna, cursor):
                     cursor.execute(
                         f"ALTER TABLE SERIES_TEMPORAIS ADD COLUMN {coluna} TEXT")
 
-        # Inserindo dados do modelo
-        cursor.execute('''
-            INSERT INTO SERIES_TEMPORAIS (id, id_commit, controle_de_versao, data, hora, dados, y_test, y_pred)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            id_atual,                      # Exemplo de ID
-            commit_id,                     # Exemplo de ID de commit
-            endereco,                     # Controle de versão
-            data_atual,                 # Data atual
-            hora_atual,                 # Hora atual
-            decomposicao,   # Dados do modelo, armazenados em formato JSON
-            json.dumps(y_test.tolist()),  # y_test convertido para JSON
-            json.dumps(y_pred.tolist())  # y_pred convertido para JSON
+        def serie_para_json(serie):
+            if serie is not None:
+                return json.dumps({
+                    "index": serie.index.tolist(),  # Índice convertido diretamente para lista
+                    "values": serie.values.tolist()  # Valores da série
+                })
+            # Retorna vazio se a série for None
+            return json.dumps({"index": [], "values": []})
 
+        # Inserindo dados do modelo
+        cursor.execute(''' 
+            INSERT INTO SERIES_TEMPORAIS (id, id_commit, controle_de_versao, data, hora, observed, trend, seasonal, resid, y_test, y_pred)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            id_atual,
+            commit_id,
+            endereco,
+            data_atual,
+            hora_atual,
+            # json.dumps(observed.tolist() if observed is not None else []),
+            # json.dumps(trend.tolist() if trend is not None else []),
+            # json.dumps(seasonal.tolist() if seasonal is not None else []),
+            # json.dumps(resid.tolist() if resid is not None else []),
+            serie_para_json(observed),  # Observed com índice
+            serie_para_json(trend),     # Trend com índice
+            serie_para_json(seasonal),  # Seasonal com índice
+            serie_para_json(resid),     # Resid com índice
+            json.dumps([]),  # y_test vazio para agora
+            json.dumps([])   # y_pred vazio para agora
         ))
 
         # Comitando as mudanças
@@ -474,12 +449,26 @@ class ExperimentLogger():
 
     def consultar_modelos(self, id_atual=None, commit_id=None, endereco=None):
         # Conectando ao banco de dados SQLite
-        conn = sqlite3.connect(
-            './dados/banco_de_dados_classificacao/classificacao.db')
-        cursor = conn.cursor()
+        if self.tipo == 'Classificacao':
+            conn = sqlite3.connect(
+                './dados/banco_de_dados_classificacao/classificacao.db')
+            cursor = conn.cursor()
+            # Montando a consulta SQL dinamicamente
+            query = 'SELECT * FROM CLASSIFICACAO WHERE 1=1'
 
-        # Montando a consulta SQL dinamicamente
-        query = 'SELECT * FROM CLASSIFICACAO WHERE 1=1'
+        if self.tipo == 'Regressao':
+            conn = sqlite3.connect(
+                './dados/banco_de_dados_regressao/regressao.db')
+            cursor = conn.cursor()
+            # Montando a consulta SQL dinamicamente
+            query = 'SELECT * FROM  REGRESSAO WHERE 1=1'
+        if self.tipo == 'Series_Temporais':
+            conn = sqlite3.connect(
+                './dados/banco_de_dados_series_temporais/series_temporais.db')
+            cursor = conn.cursor()
+            # Montando a consulta SQL dinamicamente
+            query = 'SELECT * FROM SERIES_TEMPORAIS WHERE 1=1'
+
         params = []
 
         if id_atual is not None:

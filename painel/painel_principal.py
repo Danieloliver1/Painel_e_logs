@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 from streamlit_extras.switch_page_button import switch_page
 
-link = r'E:\Repositorio_Git\12_logs\dados\bando_de_dados_classificacao.csv'
-dados = pd.read_csv(link)
 
 st.title('Menu principal')
 
@@ -57,29 +55,27 @@ col1, col2, col3 = st.columns(3)
 # st.markdown('<style>.loader { display: none; }</style>', unsafe_allow_html=True)
 
 
-
 # Adicionando links em cada coluna
 with col1:
     st.page_link("pages/painel_classificacao.py", label="Classificação")
-    #st.page_link("pages/painel_classificacao_modelos.py",label="Classificação de Modelos")
+    # st.page_link("pages/painel_classificacao_modelos.py",label="Classificação de Modelos")
     st.page_link("pages/painel_regressao.py", label="Regressão")
-    #st.page_link("pages/painel_regressao_modelos.py",label="Regressão de Modelos")
+    st.page_link("pages/painel_series_temporais.py", label="Séries Temporais")
+    # st.page_link("pages/painel_regressao_modelos.py",label="Regressão de Modelos")
 
 with col2:
     st.image("./imagens/download.png")
-    
+
     # if st.button("Painel Classificação"):
     #     switch_page("painel_classificacao")
-        
 
     # if st.button("Painel Regressão"):
     #     switch_page("painel_regressao")
 
-#with col3:
-    
+# with col3:
 
 
-#st.dataframe(dados)
+# st.dataframe(dados)
 
 # import streamlit as st
 # import pandas as pd

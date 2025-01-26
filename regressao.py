@@ -28,14 +28,13 @@ class Regression(Statistic):
                 Retorna o dicionário de métricas de regressão.
     """
 
-    def __init__(self, y_real, y_pred, X_real):
+    def __init__(self, y_real, y_pred):
 
         # Passa os argumentos para a classe pai
         super().__init__(y_real, y_pred)
 
         self.y_real = y_real
         self.y_pred = y_pred
-        self.X_real = X_real
 
         # Inicializa um dicionário para armazenar as métricas
         self.metricas = {}
@@ -132,8 +131,6 @@ class Regression(Statistic):
 
         # Adjusted R-squared - R² Ajustado
         n = len(self.y_real)  # Número de amostras
-        p = len(self.X_real)  # Número de características
-        adj_r2 = 1 - (1 - r_squared) * (n - 1) / (n - p - 1)
 
         # Armazenar as métricas no dicionário
         self.metricas = {
@@ -144,7 +141,6 @@ class Regression(Statistic):
             'mape': mape,
             'evs': evs,
             'r_squared': r_squared,
-            'adj_r2': adj_r2
         }
 
         resultado = self.summary()

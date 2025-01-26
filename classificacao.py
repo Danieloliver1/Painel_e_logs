@@ -7,16 +7,14 @@ from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, r
 from sklearn.metrics import roc_curve, auc, precision_recall_curve
 
 
-
 class Classification(Statistic):
 
-    def __init__(self, y_real, y_pred, X_real):
+    def __init__(self, y_real, y_pred):
         # Passa os argumentos para a classe pai
         super().__init__(y_real, y_pred)
 
         self.y_real = y_real
         self.y_pred = y_pred
-        self.X_real = X_real
 
         self.metricas = {}
         self.metricas_classificacao = {}
@@ -181,7 +179,7 @@ class Classification(Statistic):
 
         # Armazenando as métricas globais
         self.metricas_classificacao = {**self.metricas, **self.summary()}
-        #self.
+        # self.
 
     @property
     def classification_result(self):
@@ -204,5 +202,3 @@ class Classification(Statistic):
         dados = self.metricas_classificacao
         df = pd.DataFrame(list(dados.items()), columns=['Nome', 'Valor'])
         return df
-    
-    
