@@ -61,6 +61,7 @@ with col1:
     # st.page_link("pages/painel_classificacao_modelos.py",label="Classificação de Modelos")
     st.page_link("pages/painel_regressao.py", label="Regressão")
     st.page_link("pages/painel_series_temporais.py", label="Séries Temporais")
+    st.page_link("pages/painel_analise_dados.py", label="Análise de Dados")
     # st.page_link("pages/painel_regressao_modelos.py",label="Regressão de Modelos")
 
 with col2:
@@ -91,3 +92,15 @@ with col2:
 #     my_data_element.add_rows(add_df)
 
 # st.button("Regenerate")
+
+
+
+
+# import streamlit as st
+
+# st.title("Exibindo Texto no Streamlit")  # Título maior
+# st.header("Este é um cabeçalho")  # Cabeçalho grande
+# st.subheader("Este é um subcabeçalho")  # Cabeçalho menor
+# st.text("Este é um texto simples.")  # Texto sem formatação
+# st.write("Texto com `st.write()`, que aceita Markdown, variáveis e muito mais!")  
+# st.markdown("**Texto em negrito**, _itálico_, e até [um link](https://www.streamlit.io)!")
